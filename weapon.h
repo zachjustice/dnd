@@ -15,19 +15,66 @@ class Weapon
 {
     public:
         Weapon() = default;
-        Weapon( std::string str, const int c, const Die d, const damageTypes dt, const int w,
-                const std::vector<std::string> v, const weaponClasses wc, const weaponTypes wt ) :
-            name(str), cost(c), damageDie(d), dType(dt), weight(w), weaponProperties(v),
-            weaponType(wt), weaponClass(wc) {};
+        /*
+         * Constructor
+         * @param name The name of the weapon like "Shining Metal Stick of Great Exuberance"
+         * @param cost The cost of the weapon in gold pieces (gp)
+         * @param damageDie The die used to roll base damage for this weapon (ex: a lance uses a d12)
+         * @param dType Peircing, slashing, etc
+         * @param weight Weight in pounds
+         * @param weaponProperties a vector of strings describing the weapon (i.e. finesse, special, etc)
+         * @param weaponClass whether the weapon is simple or martial
+         * @param weaponType  whether the weapon is melee or range
+         */
+        Weapon( std::string name, const int cost, const Die damageDie, const damageTypes dType, const int weight,
+                const std::vector<std::string> weaponProperties, const weaponClasses weaponClass, const weaponTypes weaponType ) :
+            name(name), cost(cost), damageDie(damageDie), dType(dType), weight(weight), weaponProperties(weaponProperties),
+            weaponType(weaponType), weaponClass(weaponClass) {};
 
+        /*
+         * @return string Name of the Weapon
+         */
         std::string getName()                          { return name; };
+
+        /*
+         * @return int The cost of the weapon in gp
+         */
         int getCost()                            const { return cost; };
+
+        /*
+         * Rolls the damage die associated with this weapon and returns the result
+         * @return int how much damage using the weapon causes
+         */
         int use()                                const { return damageDie.roll(); };
+
+        /*
+         * @return int How much the weapon weighs
+         */
         int getWeight()                          const { return weight; };
+
+        /*
+         * @return damageTypes the type of damage this weapon does (eg piercing, slashing, etc)
+         */
         damageTypes getDamageType()              const { return dType; };
+
+        /*
+         * @return vector<string> Vector properties for the weapon (eg finesse)
+         */
         std::vector<std::string> getProperties() const { return weaponProperties; };
+
+        /*
+         * @return simple or martial
+         */
         weaponClasses getWeaponClass()           const { return weaponClass; };
+
+        /*
+         * @return melee or range
+         */
         weaponTypes getWeaponType()              const { return weaponType; };
+
+        /*
+         * @return string representation of the weapon for debugging purposes
+         */
         virtual std::string toString()                   ;
     protected:
         std::string              name;
@@ -38,6 +85,7 @@ class Weapon
         std::vector<std::string> weaponProperties;
         weaponClasses            weaponClass;
         weaponTypes              weaponType;
+
 };
 
 class Lance : public Weapon {

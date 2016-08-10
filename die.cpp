@@ -2,7 +2,6 @@
 #include <sys/time.h>
 #include "die.h"
 
-//--------------------------------------------------
 Die::Die( int n )
 {
     this->sides = n; // how many sides the die has
@@ -17,5 +16,6 @@ Die::Die( int n )
 
 int Die::roll() const
 {
+    // number between 1 and sides
     return 1 + (int) ( double(sides) * (std::rand() / (RAND_MAX + 1.0)));
 }
