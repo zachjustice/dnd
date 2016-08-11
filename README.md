@@ -4,7 +4,7 @@ run using this command: `g++ main.cpp die.cpp player.cpp race.cpp weapon.cpp -o 
 
 main.cpp shows intended usuage of code.
 
-This library? repo? code? exists to solve the problem of:
+This code exists to solve the problem of:
 * What do I roll and when?
 * What is added to my rolls and where does that come from?
 
