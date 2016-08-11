@@ -1,6 +1,7 @@
 # dnd
 
-run using this command: g++ main.cpp die.cpp player.cpp race.cpp weapon.cpp -o a.out -std=c++11  && ./a.out
+run using this command: `g++ main.cpp die.cpp player.cpp race.cpp weapon.cpp -o a.out -std=c++11  && ./a.out`
+
 main.cpp shows intended usuage of code.
 
 This library? repo? code? exists to solve the problem of:
