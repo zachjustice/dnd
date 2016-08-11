@@ -8,7 +8,7 @@ This code exists to solve the problem of:
 * What do I roll and when?
 * What is added to my rolls and where does that come from?
 
-Most of the logic for this code comes from needing to meet these requirements:
+Specifically I need to figure out:
 * What is my target's AC (armor class)?
 * What do I need to roll to beat this AC? (d20 + proficiency bonus if you are proficient in the weapon + str/dex ability modifier based on weapon)
 ** Subsequently, am I proficient in this weapon? (This comes from your race and class)
