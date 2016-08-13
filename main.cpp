@@ -14,6 +14,8 @@ using namespace std;
 
 int main()
 {
+    Die::initDie(100000009);
+
     map<abilities, int> abilityScores =
     {
         { abilities::charisma, 10 },

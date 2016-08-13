@@ -6,8 +6,10 @@ class Die
 {
     public:
         Die() {};
-        Die( int sides );
+        Die( const int sides );
         int roll() const;
+        static void initDie();
+        static void initDie( int s );
     private:
         int sides;
 };
