@@ -5,7 +5,11 @@
 
 #include <string>
 #include <vector>
+#include <map>
+
 #include "weapon.h"
+#include "skills.h"
+#include "die.h"
 
 // only derived classes should use the race constructor
 class Race
@@ -14,11 +18,19 @@ class Race
         virtual ~Race() {};
 
         Race() = default;
+
         /*
          * @param name the name of the race
          * @param v vector<string> of the proficiencies of this race
          */
-        Race( const std::string name, const std::vector<std::string> v ) : name(name), proficiencies(v) {};
+        Race(
+            std::string                name,
+            std::vector<weaponTypes>   weaponTypeProficiencies,
+            std::vector<weaponClasses> weaponClassProficiencies,
+            std::vector<std::string>   weaponProficiencies,
+            std::vector<skills>        skillProficiencies,
+            std::map<abilities, int>        abilityScoreModifiers
+        );
 
         /*
          * @return string the name of the race
@@ -29,22 +41,34 @@ class Race
          * @param a weapon to check for racial proficiency in.
          * @return bool whether or not the race is proficient in the weapon
          */
-        virtual bool isProficientIn( Weapon w ) { return false; };
+        bool isProficientIn( Weapon w );
+
+        /*
+         * @param a skill to check for racial proficiency in.
+         * @return bool whether or not the race is proficient in the skill
+         */
+        bool isProficientIn( skills s );
+
+        /*
+         * @desc return the ability score modifier provided by this race. Used when constructing a new player.
+         * @return int the ability score modifier provided by this race
+         */
+        int getAbilityScoreModifier( abilities ability );
+
     protected:
-        std::string              name;
-        // TODO these aren't used anywhere yet.
-        std::vector<std::string> proficiencies;
-        std::vector<std::string> savingThrowProficiencies;
-        std::vector<std::string> primaryAbilities;
-        Die                      hitDie;
+        std::string                name;
+        std::vector<weaponTypes>   weaponTypeProficiencies;
+        std::vector<weaponClasses> weaponClassProficiencies;
+        std::vector<std::string>   weaponProficiencies;
+        std::vector<skills>        skillProficiencies;
+        std::map<abilities, int>   abilityScoreModifiers;
 };
 
 class Dragonborn : public Race
 {
     public:
-        Dragonborn(): Race("Dragonborn", std::vector<std::string>{"simple", "martial", "armor", "shields"}) {};
+        Dragonborn();
         ~Dragonborn() {};
-        bool isProficientIn( Weapon w ) override;
 };
 
 #endif

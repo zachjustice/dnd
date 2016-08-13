@@ -1,4 +1,3 @@
-#include <string>
 #include "weapon.h"
 
 using namespace std;

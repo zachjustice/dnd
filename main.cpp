@@ -6,6 +6,7 @@
 #include "player.h"
 #include "race.h"
 #include "klass.h"
+#include "skills.h"
 #include "weapon.h"
 #include "die.h"
 
@@ -13,14 +14,14 @@ using namespace std;
 
 int main()
 {
-    map<std::string, int> abilities =
+    map<abilities, int> abilityScores =
     {
-        { "charisma", 10 },
-        { "wisdom", 10 },
-        { "intelligence", 10 },
-        { "dexterity", 10 },
-        { "strength", 19 },
-        { "constitution", 10 }
+        { abilities::charisma, 10 },
+        { abilities::wisdom, 10 },
+        { abilities::intelligence, 10 },
+        { abilities::dexterity, 10 },
+        { abilities::strength, 10 },
+        { abilities::constitution, 10 }
     };
 
     Lance l = Lance();
@@ -33,17 +34,23 @@ int main()
     Weapon lance = Lance();
     Weapon sword = Shortsword();
 
-    Player me = Player( "Zach", new Dragonborn(), new Paladin(), abilities, 34 );
+    std::vector<skills> skillProficiencies { skills::athletics, skills::persuasion };
+
+    Player me = Player( "Zach", new Dragonborn(), new Paladin(skillProficiencies), abilityScores );
     me.setWeapon( lance );
     me.giveExperiencePoints( 34000 );
 
-    Player contortedAboration = Player( "Azulboth the Slimy", new Dragonborn(), new Paladin(), abilities, 20 );
+    Player contortedAboration = Player( "Azulboth the Slimy", new Dragonborn(), new Paladin(skillProficiencies), abilityScores );
     contortedAboration.setWeapon( sword );
 
     me.attack( contortedAboration );
 
-    cout << me.getName() << " has " << me.health << " health." << endl;
-    cout << contortedAboration.getName() << " has " << contortedAboration.health << " health." << endl;
+    cout << me.getName() << " has " << me.hp << " health." << endl;
+    cout << contortedAboration.getName() << " has " << contortedAboration.hp << " health." << endl << endl;
+
+    int roll = me.abilityCheck( skills::athletics );
+
+    cout << "You roll a " << roll << "." << endl;
 
     return 0;
 }

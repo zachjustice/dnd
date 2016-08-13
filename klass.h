@@ -4,32 +4,78 @@
 #define __KLASS_H__
 
 #include <string>
+#include "weapon.h"
+#include "skills.h"
+#include "die.h"
 
 //enum class className { barbarian, bard, cleric, druid, fighter, paladin,
                      //monk, ranger, rogue, sorcerer, warlock, wizard };
 
 /*
  * @desc A Player has a class (eg bard, cleric, etc)
- * only derived classes should use the race constructor
+ * only derived classes should use the klass constructor
  *
  */
 class Klass
 {
     public:
+        virtual ~Klass() {};
+
         Klass() = default;
+        /*
+         * @param name the name of the klass
+         * @param v vector<string> of the proficiencies of this klass
+         */
+        Klass(
+            int                        baseHitPointsAtFirstLevel,
+            abilities                  baseHitPointsModifierAtFirstLevel,
+            std::string                name,
+            std::vector<weaponTypes>   weaponTypeProficiencies,
+            std::vector<weaponClasses> weaponClassProficiencies,
+            std::vector<std::string>   weaponProficiencies,
+            std::vector<abilities>     savingThrowProficiencies,
+            std::vector<skills>        skillProficiencies,
+            Die                        hitDie,
+            Die                        altHitDie
+        );
 
         /*
-         * @param string the name of the class
+         * @return string the name of the klass
          */
-        Klass( const std::string klass ) : klass(klass) {};
+        std::string toString() const { return name; };
 
         /*
-         * @return string the name of the class
+         * @param a weapon to check for klass proficiency in.
+         * @return bool whether or not the klass is proficient in the weapon
          */
-        std::string toString() const { return klass; };
+        bool isProficientIn( Weapon w );
 
+        /*
+         * @param a skill to check for klass proficiency in.
+         * @return bool whether or not the klass is proficient in the skill
+         */
+        bool isProficientIn( skills s );
+
+        /*
+         * @return int the base hp its provided to a player of this klass at the first level.
+         */
+        int                        getBaseHitPointsAtFirstLevel() { return baseHitPointsAtFirstLevel; };
+
+        /*
+         * @return abilities the modifier to add to your base hit points at the first level for a player of this klass at the first level.
+         */
+        abilities                  getBaseHitPointsModifierAtFirstLevel() { return baseHitPointsModifierAtFirstLevel; };
     protected:
-        std::string klass;
+        int                        baseHitPointsAtFirstLevel;
+        abilities                  baseHitPointsModifierAtFirstLevel;
+        std::string                name;
+        std::vector<weaponTypes>   weaponTypeProficiencies;
+        std::vector<weaponClasses> weaponClassProficiencies;
+        std::vector<std::string>   weaponProficiencies;
+        std::vector<abilities>     savingThrowProficiencies;
+        std::vector<skills>        skillProficiencies;
+        Die                        hitDie;
+        Die                        altHitDie;
 };
 
 /*
@@ -39,7 +85,7 @@ class Klass
 class Paladin : public Klass
 {
     public:
-        Paladin(): Klass("Paladin") {};
+        Paladin( const std::vector<skills> skillProficiencies );
 };
 
 #endif

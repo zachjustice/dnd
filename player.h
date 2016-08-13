@@ -10,10 +10,8 @@
 #include "weapon.h"
 #include "race.h"
 #include "klass.h"
+#include "skills.h"
 #include "die.h"
-
-#include <iostream>
-using namespace std;
 
 const int BASE_ARMOR_CLASS = 8;
 
@@ -25,18 +23,24 @@ class Player
          * @param race A pointer to a race of the player-- Dragonborn
          * @param klass A pointer to a klass of the player-- Paladin
          * @param abilities a map of ability->ability scores
-         * @param health how much hp the player has TODO make a current and max hp
          */
-        Player(  std::string name, Race* race, Klass* klass, std::map<std::string, int> abilities, int health );
+        Player(  std::string name, Race* race, Klass* klass, std::map<abilities, int> abilityScores );
         ~Player() { delete race; delete klass; }
         // TODO copy and move
 
         /*
-         * @desc Roll to see if you beat target's AC then roll for damage. Subtract damage from targets health.
+         * @desc Rolls a d20 + proficiency bonus if applicable + relevant ability modifier
+         * @param skill The skill being performed
+         * @return int the result of the ability check
+         */
+        int abilityCheck( skills skill );
+
+        /*
+         * @desc Roll to see if you beat target's AC then roll for damage. Subtract damage from targets hp.
          * see attackRoll() and damageRoll()
          * @param target reference to a player object of who you are attacking
          */
-        void attack( Player &target ) ;
+        void attack( Player &target );
 
         /*
          * @desc Use to check if you beat a target's AC
@@ -53,9 +57,9 @@ class Player
         // TODO cast( Spell spell, Player &target )
 
         /*
-         * @return Weapon the currect weapon weilded by our player
+         * @return Weapon the current weapon weilded by our player
          */
-        Weapon getWeapon() ;
+        Weapon getWeapon();
 
         /*
          * @param weapon The weapon to be weilded by this player
@@ -70,13 +74,13 @@ class Player
         /*
          * @return string The name of the player-- "Eli"
          */
-        std::string getName() ;
+        std::string getName();
 
         /*
          * @desc Added to ability checks on weapons, tools, etc for things your player is proficient in.
          * @return int 8 + dexterity modifier
          */
-        int getProficiencyBonus() ;
+        int getProficiencyBonus();
 
         /*
          * @desc NOTE: We don't actually track your level, just xp.
@@ -96,14 +100,14 @@ class Player
         void giveExperiencePoints( int xp );
         /* TODO add inventory */
 
-        int health; // Should this be private?
+        int hp; // Should this be private?
     private:
 
         /*
          * @desc Ability modifer is your ( ability score - 10 ) / 2. Round down.
          * @param ability An ability in the abilities hash like "Charisma"
          */
-        int getAbilityModifier( std::string ability ) ;
+        int getAbilityModifier( abilities ability ) ;
 
         /*
          * @desc Whether or not a player is proficient in a weapon. Calls the
@@ -118,10 +122,31 @@ class Player
         Weapon                     weapon; // used for when the player attacks things
         int                        experiencePoints;
         std::string                name;
-        std::vector<std::string>   proficiencies;
-        std::map<std::string, int> abilities;
+        std::map<abilities, int>   abilityScores;
         Race*                      race; // pointers so we can use virtual methods effectively
         Klass*                     klass; // pointers so we can use virtual methods effectively
+
+        std::map<skills, abilities> skillToAbility =
+        {
+            { skills::athletics , abilities::strength },
+            { skills::acrobatics , abilities::dexterity },
+            { skills::sleightOfHand , abilities::dexterity },
+            { skills::stealth , abilities::dexterity },
+            { skills::arcana , abilities::intelligence },
+            { skills::history , abilities::intelligence },
+            { skills::investigation , abilities::intelligence },
+            { skills::nature , abilities::intelligence },
+            { skills::religion , abilities::intelligence },
+            { skills::animalHandling , abilities::wisdom },
+            { skills::insight , abilities::wisdom },
+            { skills::medicine , abilities::wisdom },
+            { skills::perception , abilities::wisdom },
+            { skills::survival , abilities::wisdom },
+            { skills::deception , abilities::charisma },
+            { skills::intimidation , abilities::charisma },
+            { skills::persuasion , abilities::charisma },
+            { skills::performance , abilities::charisma }
+        };
 };
 
 #endif

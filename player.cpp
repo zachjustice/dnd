@@ -4,23 +4,45 @@
 #include <vector>
 
 #include "player.h"
-#include "race.h"
-#include "klass.h"
-#include "weapon.h"
-#include "die.h"
 
 using namespace std;
 
-Player::Player( string playerName, Race* r, Klass* k, map<string, int> playerAbilities, int playerHealth  )
+Player::Player( string playerName, Race* r, Klass* k, map<abilities, int> playerAbilities )
 {
     name = playerName;
-    abilities = playerAbilities;
-    health = playerHealth;
+    abilityScores = playerAbilities;
     race = r;
     klass = k;
 
     d20 = Die( 20 );
     experiencePoints = 0;
+
+    for( auto& iter : abilityScores )
+    {
+        auto ability = iter.first;
+        auto abilityScore = iter.second;
+
+        abilityScores[ability] += race->getAbilityScoreModifier( ability );
+    }
+
+    hp = klass->getBaseHitPointsAtFirstLevel() + getAbilityModifier( klass->getBaseHitPointsModifierAtFirstLevel() );
+}
+
+int Player::abilityCheck( skills skill )
+{
+    int roll = d20.roll();
+    cout << "----- ability check ----" << endl;
+
+    if( race->isProficientIn( skill ) || klass->isProficientIn( skill ) )
+    {
+        cout << "    prof bonus " << getProficiencyBonus() << endl;
+        roll += getProficiencyBonus();
+    }
+
+    roll += getAbilityModifier( skillToAbility[skill] );
+    cout << "    getAbilityModifier " << getAbilityModifier(abilities::strength) << endl;
+
+    return roll;
 }
 
 void Player::attack( Player &target )
@@ -39,13 +61,13 @@ void Player::attack( Player &target )
     // TODO support for damage buffs and debuffs from both player and targets
     cout << "----- damage roll ----" << endl;
     int damage = damageRoll();
-    target.health -= damage;
+    target.hp -= damage;
 
     std::cout << "You hit " << target.getName() << " for " << damage << " damage." << std::endl;
     return;
 }
 
-int Player::getAbilityModifier( string ability )
+int Player::getAbilityModifier( abilities ability )
 {
     // ability modifier is based on your ability score following this pattern:
     // 6, 7 = -2
@@ -53,14 +75,14 @@ int Player::getAbilityModifier( string ability )
     // 10, 11 = 0
     // 12 ,13 = 1
     // 14,15 = 2   <-- subtract 10, divide by 2
-    int abilityScore = abilities[ability];
+    int abilityScore = abilityScores[ability];
 
     return ( abilityScore - 10 ) / 2;
 }
 
 int Player::getArmorClass()
 {
-    return BASE_ARMOR_CLASS + getAbilityModifier( "dexterity" );
+    return BASE_ARMOR_CLASS + getAbilityModifier( abilities::dexterity );
 }
 
 // attack roll = d20 + proficiency if you are proficient in weapon + relevant ability modifier
@@ -78,12 +100,12 @@ int Player::attackRoll()
 
     if( weapon.getWeaponType() == weaponTypes::melee )
     {
-        attkRoll += getAbilityModifier( "strength" );
-        cout << "    getAbilityModifier " << getAbilityModifier("strength") << endl;
+        attkRoll += getAbilityModifier( abilities::strength );
+        cout << "    getAbilityModifier " << getAbilityModifier(abilities::strength) << endl;
     }
     else if( weapon.getWeaponType() == weaponTypes::range )
     {
-        attkRoll += getAbilityModifier( "dexterity" );
+        attkRoll += getAbilityModifier( abilities::dexterity );
     }
 
     cout << "    attack roll: " << attkRoll << endl;
@@ -99,12 +121,12 @@ int Player::damageRoll()
 
     if( weapon.getWeaponType() == weaponTypes::melee )
     {
-        weaponDamage += getAbilityModifier("strength");
-        cout << "    getAbilityModifier " << getAbilityModifier("strength") << endl;
+        weaponDamage += getAbilityModifier(abilities::strength);
+        cout << "    getAbilityModifier " << getAbilityModifier(abilities::strength) << endl;
     }
     else if( weapon.getWeaponType() == weaponTypes::range )
     {
-        weaponDamage += getAbilityModifier("dexterity");
+        weaponDamage += getAbilityModifier(abilities::dexterity);
     }
 
     return weaponDamage;
@@ -127,7 +149,7 @@ string Player::getName()
 
 bool Player::isProficientIn( Weapon w )
 {
-    if( race->isProficientIn( w ) /*|| klass->isProficientIn( w )*/ )
+    if( race->isProficientIn( w ) || klass->isProficientIn( w ) )
     {
         return true;
     }

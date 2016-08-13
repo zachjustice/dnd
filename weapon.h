@@ -90,14 +90,14 @@ class Weapon
 
 class Lance : public Weapon {
     public:
-        Lance(): Weapon( "Big Pointy Stick", 10, Die(12), damageTypes::piercing, 6,
+        Lance(): Weapon( "lance", 10, Die(12), damageTypes::piercing, 6,
         std::vector<std::string>{ "reach", "special" }, weaponClasses::simple, weaponTypes::melee ) {};
         std::string toString() override;
 };
 
 class Shortsword : public Weapon {
     public:
-        Shortsword(): Weapon( "Pointy Metal Stick", 10, Die(6), damageTypes::piercing, 2,
+        Shortsword(): Weapon( "shortsword", 10, Die(6), damageTypes::piercing, 2,
          std::vector<std::string>{ "finesse", "light" }, weaponClasses::simple, weaponTypes::melee ) {};
 };
 
