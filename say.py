@@ -10,5 +10,5 @@ phrases = [
 ]
 
 phrase = random.choice(list(enumerate(phrases)))[1]
-subprocess.call(["osascript", "-e", "set volume output volume 5"])
+subprocess.call(["osascript", "-e", "set volume output volume 8"])
 subprocess.call(["say", phrase])
